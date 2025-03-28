@@ -1,0 +1,6 @@
+# Ignore virtual environment
+hsi_env/
+__pycache__/
+*.pyc
+*.pyo
+*.ipynb_checkpoints/

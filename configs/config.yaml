@@ -1,0 +1,13 @@
+data:
+  raw_data_path: "data/raw/hsi_dataset.csv"
+  processed_data_path: "data/processed/hsi_cleaned.csv"
+
+model:
+  model_type: "random_forest"
+  n_estimators: 100
+  max_depth: 20
+  test_size: 0.2
+
+api:
+  host: "0.0.0.0"
+  port: 5000
