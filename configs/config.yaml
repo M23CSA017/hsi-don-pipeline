@@ -1,13 +1,26 @@
-data:
-  raw_data_path: "data/raw/hsi_dataset.csv"
-  processed_data_path: "data/processed/hsi_cleaned.csv"
+# General configuration
+random_state: 42
+raw_data_path: "./data/raw/MLE-Assignment.csv"
 
-model:
-  model_type: "random_forest"
-  n_estimators: 100
-  max_depth: 20
-  test_size: 0.2
+# Preprocessed data paths
+x_train_path: "./data/processed/x_train.csv"
+x_test_path: "./data/processed/x_test.csv"
+y_train_path: "./data/processed/y_train.csv"
+y_test_path: "./data/processed/y_test.csv"
 
-api:
-  host: "0.0.0.0"
-  port: 5000
+# Model save paths
+model_save_path: "./data/models/best_xgboost_model.pkl"
+nn_model_path: "./data/models/best_nn_model.pt"
+
+
+# Neural network parameters
+nn_model:
+  hidden_dim: 128 
+  input_dim: 70
+  num_epochs: 100
+  patience: 10
+  learning_rate: 0.001
+  batch_size: 32
+
+# Optuna tuning
+optuna_trials: 5

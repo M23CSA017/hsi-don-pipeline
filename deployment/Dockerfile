@@ -1,17 +1,19 @@
-# Use official Python image
+# Dockerfile
+# Example Dockerfile for deploying the pipeline
+
 FROM python:3.9-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy project files
-COPY . .
+# Copy requirements
+COPY requirements.txt .
 
 # Install dependencies
-RUN pip install -r deployment/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose API port
-EXPOSE 5000
+# Copy the entire project (adjust as necessary)
+COPY . .
 
-# Run FastAPI/Flask app
-CMD ["python", "deployment/app.py"]
+# By default, run the training script (or switch to app.py if deploying an API)
+CMD ["python", "src/models/train_model.py"]

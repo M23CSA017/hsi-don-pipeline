@@ -1,0 +1,66 @@
+2025-03-31 04:24:41,120 - INFO - Configuration loaded successfully.
+2025-03-31 04:24:41,129 - INFO - Data loaded: X_train (395, 71), X_test (100, 71), y_train (395, 2), y_test (100, 2)
+2025-03-31 04:24:41,130 - INFO - Identifier columns removed and targets extracted.
+2025-03-31 04:24:43,053 - INFO - Model evaluation completed.
+2025-03-31 04:24:43,054 - INFO - XGBoost Baseline Performance:
+2025-03-31 04:24:43,055 - INFO - {'CV_RMSE_mean': np.float64(7346.202733431108), 'CV_RMSE_std': np.float64(4569.841451961353), 'Test_MAE': 2435.782413339615, 'Test_RMSE': np.float64(7679.777381628371), 'Test_R2': 0.7890089657057169}
+2025-03-31 04:24:43,055 - INFO - Starting hyperparameter tuning with Optuna...
+2025-03-31 04:25:18,386 - INFO - Best trial RMSE: 7567.7866
+2025-03-31 04:25:18,387 - INFO - Best parameters: {'n_estimators': 272, 'max_depth': 9, 'learning_rate': 0.08721830998229096, 'subsample': 0.8445776396190179, 'colsample_bytree': 0.9129328155280088, 'min_child_weight': 8, 'gamma': 0.4751758762823277, 'reg_alpha': 0.9198429847259147, 'reg_lambda': 0.9810362483082278}
+2025-03-31 04:25:20,946 - INFO - Model evaluation completed.
+2025-03-31 04:25:20,947 - INFO - Final Model Performance:
+2025-03-31 04:25:20,948 - INFO - {'CV_RMSE_mean': np.float64(6685.931600547963), 'CV_RMSE_std': np.float64(3545.3791602425267), 'Test_MAE': 2540.090928249359, 'Test_RMSE': np.float64(5602.773071231816), 'Test_R2': 0.8877017976481363}
+2025-03-31 04:25:20,950 - INFO - Final model saved to ../data/models/best_xgboost_model.pkl
+2025-03-31 04:25:22,093 - INFO - SHAP explainer saved to ../data/models/shap_explainer.pkl
+2025-03-31 04:25:22,095 - INFO - Sample prediction: 736.32 ppb
+2025-03-31 04:25:22,095 - INFO - Final Model Performance Summary:
+2025-03-31 04:25:22,096 - INFO -               Metric       Value
+Cross-Validated RMSE 6685.931601
+            Test MAE 2540.090928
+           Test RMSE 5602.773071
+             Test R²    0.887702
+2025-03-31 04:25:22,098 - INFO - Top 10 Features:
+2025-03-31 04:25:22,099 - INFO - Feature  Importance
+    PC3    0.189691
+   PC33    0.109957
+    PC2    0.060464
+   PC53    0.056767
+    PC6    0.055127
+   PC60    0.044180
+   PC22    0.041453
+    PC1    0.031331
+   PC59    0.030193
+   PC10    0.026973
+2025-03-31 04:34:36,493 - INFO - Configuration loaded successfully.
+2025-03-31 04:34:36,506 - INFO - Data loaded: X_train (395, 71), X_test (100, 71), y_train (395, 2), y_test (100, 2)
+2025-03-31 04:34:36,508 - INFO - Identifier columns removed and targets extracted.
+2025-03-31 04:34:39,157 - INFO - Model evaluation completed.
+2025-03-31 04:34:39,158 - INFO - XGBoost Baseline Performance:
+2025-03-31 04:34:39,158 - INFO - {'CV_RMSE_mean': np.float64(7346.202733431108), 'CV_RMSE_std': np.float64(4569.841451961353), 'Test_MAE': 2435.782413339615, 'Test_RMSE': np.float64(7679.777381628371), 'Test_R2': 0.7890089657057169}
+2025-03-31 04:34:39,159 - INFO - Starting hyperparameter tuning with Optuna...
+2025-03-31 04:35:14,246 - INFO - Best trial RMSE: 7567.7866
+2025-03-31 04:35:14,247 - INFO - Best parameters: {'n_estimators': 272, 'max_depth': 9, 'learning_rate': 0.08721830998229096, 'subsample': 0.8445776396190179, 'colsample_bytree': 0.9129328155280088, 'min_child_weight': 8, 'gamma': 0.4751758762823277, 'reg_alpha': 0.9198429847259147, 'reg_lambda': 0.9810362483082278}
+2025-03-31 04:35:16,775 - INFO - Model evaluation completed.
+2025-03-31 04:35:16,776 - INFO - Final Model Performance:
+2025-03-31 04:35:16,777 - INFO - {'CV_RMSE_mean': np.float64(6685.931600547963), 'CV_RMSE_std': np.float64(3545.3791602425267), 'Test_MAE': 2540.090928249359, 'Test_RMSE': np.float64(5602.773071231816), 'Test_R2': 0.8877017976481363}
+2025-03-31 04:35:16,780 - INFO - Final model saved to ../data/models/best_xgboost_model.pkl
+2025-03-31 04:35:17,939 - INFO - SHAP explainer saved to ../data/models/shap_explainer.pkl
+2025-03-31 04:35:17,941 - INFO - Sample prediction: 736.32 ppb
+2025-03-31 04:35:17,942 - INFO - Final Model Performance Summary:
+2025-03-31 04:35:17,943 - INFO -               Metric       Value
+Cross-Validated RMSE 6685.931601
+            Test MAE 2540.090928
+           Test RMSE 5602.773071
+             Test R²    0.887702
+2025-03-31 04:35:17,944 - INFO - Top 10 Features:
+2025-03-31 04:35:17,945 - INFO - Feature  Importance
+    PC3    0.189691
+   PC33    0.109957
+    PC2    0.060464
+   PC53    0.056767
+    PC6    0.055127
+   PC60    0.044180
+   PC22    0.041453
+    PC1    0.031331
+   PC59    0.030193
+   PC10    0.026973
