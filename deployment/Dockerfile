@@ -1,19 +1,18 @@
-# Dockerfile
-# Example Dockerfile for deploying the pipeline
-
-FROM python:3.9-slim
+# Use Python official image
+FROM python:3.10.16-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements
-COPY requirements.txt .
-
-# Install dependencies
+# Copy requirements and install dependencies
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project (adjust as necessary)
+# Copy all files to container
 COPY . .
 
-# By default, run the training script (or switch to app.py if deploying an API)
-CMD ["python", "src/models/train_model.py"]
+# Expose API port
+EXPOSE 8000
+
+# Run FastAPI
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
