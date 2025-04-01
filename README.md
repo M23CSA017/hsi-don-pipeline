@@ -1,45 +1,75 @@
-# HSI DON Pipeline
+# 🌽 HSI DON Pipeline
 
-## Overview
-This repository implements a machine learning pipeline to predict mycotoxin levels (DON concentration) in corn samples using hyperspectral imaging data.
+A production-ready machine learning pipeline for predicting **DON (Deoxynivalenol)** concentrations in corn using **Hyperspectral Imaging (HSI)** data. This pipeline is modular, interpretable, and deployable with Docker and FastAPI.
 
-## Features
-- **Data Loading & EDA**: Inspect raw CSV, check for anomalies, basic sensor drift placeholder.
-- **Preprocessing**: Imputation, scaling, Z-score anomaly detection, PCA dimension reduction.
-- **Model Training**: XGBoost baseline + hyperparameter tuning (Optuna).
-- **Evaluation**: Cross-validation, standard regression metrics, SHAP interpretability.
-- **Deployment**: Dockerfile and FastAPI service (`app.py`) for real-time predictions.
-- **Testing**: Unit tests for data pipeline & model pipeline using `unittest`.
+---
 
-## Folder Structure
-(See the detailed structure in the project.)
+## 📦 Features
 
-## Quick Start
-1. **Clone the repo**:
+- ✅ **Data Ingestion & Exploration**
+  - Missing value checks, duplicates, outlier detection
+  - Sensor drift visualization (placeholder)
+  - EDA visualizations (histograms, spectral plots, PCA, etc.)
 
+- ⚙️ **Preprocessing**
+  - Z-score based anomaly filtering
+  - Imputation & standardization
+  - NDVI-like index feature
+  - PCA-based dimensionality reduction
+
+- 🤖 **Model Training & Optimization**
+  - XGBoost and Neural Network regressors
+  - Hyperparameter tuning using **Optuna**
+  - Cross-validation support
+  - Residual analysis for error diagnostics
+
+- 📊 **Evaluation & Explainability**
+  - Regression metrics (MAE, RMSE, R²)
+  - Residual & actual-vs-predicted plots
+  - SHAP-based feature importance and bar plots
+  - Model comparison summary plots
+
+- 🚀 **Deployment**
+  - FastAPI-powered REST API
+  - Dockerfile for containerization
+  - Real-time single & batch prediction endpoints
+
+- 🧪 **Testing & CI/CD**
+  - Modular unit tests for pipeline stages
+  - GitHub Actions CI for every commit
+  - Ready for GitHub Codespaces and local development
+
+---
+
+
+---
 
 ## 🔍 Model Evaluation & Visualizations
 
-- **Actual vs Predicted Plot** – Compares actual values with predicted values.
-- **Residual Plot** – Analyzes model error and residual distribution.
-- **SHAP Analysis** – Provides insights into feature importance using SHAP.
+- **Actual vs Predicted Plot** – Compares true and predicted values.
+- **Residual Plot** – Examines model prediction errors.
+- **SHAP Analysis** – Explains model decisions using feature importance.
 
-### 🎨 Visualization Outputs:
-- XGBoost Evaluation Plots: `data/plots/xgb_results.png`
-- Neural Network Evaluation Plots: `data/plots/nn_results.png`
-- SHAP Feature Importance Plots:
-    - `data/plots/xgb_feature_importance.png`
-    - `data/plots/shap_bar_plot.png`
-    - `data/plots/shap_summary_plot.png`
+### 🎨 Visualization Outputs
 
-## 🚀 API Endpoints
+- `data/plots/xgb_results.png` – XGBoost results
+- `data/plots/nn_results.png` – Neural Network results
+- `data/plots/shap_summary_plot.png` – SHAP Summary
+- `data/plots/model_comparison.png` – Model comparison
+- `data/plots/residuals_nn.png` – Residuals: Neural Network
+- `data/plots/residuals_xgb.png` – Residuals: XGBoost
 
-- **POST /predict** – Predict DON concentration for a single sample.
-- **POST /predict_batch/** – Predict DON concentration for multiple samples.
+---
 
-## 🐳 Docker Deployment
+## 🚀 FastAPI Endpoints
 
-1. Build the Docker image:
-   ```bash
-   docker build -t don_prediction_api .
+- `POST /predict` – Predict DON concentration for a single sample
+- `POST /predict_batch` – Predict DON concentrations for multiple samples
+
+### Example usage:
+```bash
+curl -X POST http://127.0.0.1:8000/predict \
+    -H "Content-Type: application/json" \
+    -d '{"features": [0.12, 0.34, ..., 0.78]}'
+
 
