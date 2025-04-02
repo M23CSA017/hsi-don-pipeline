@@ -21,12 +21,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Convert repository owner to lowercase
-        id: lowercase
-        run: |
-          echo "REPO_OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+          password: ${{ secrets.CR_PAT }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -34,4 +29,4 @@ jobs:
           context: .
           file: deployment/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.REPO_OWNER_LC }}/don-predictor:latest
+          tags: ghcr.io/${{ github.repository_owner }}/don-predictor:latest
