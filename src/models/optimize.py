@@ -10,6 +10,7 @@ from optuna.samplers import TPESampler
 import xgboost as xgb
 from sklearn.model_selection import cross_val_score, KFold
 
+
 def objective(trial, X_train, y_train, random_state=42):
     """
     Objective function for Optuna hyperparameter optimization.
@@ -43,6 +44,7 @@ def objective(trial, X_train, y_train, random_state=42):
 
     return np.sqrt(-score)
 
+
 def run_optuna_optimization(X_train,
                             y_train,
                             random_state=42,
@@ -52,6 +54,12 @@ def run_optuna_optimization(X_train,
     """
     sampler = TPESampler(seed=random_state)
     study = optuna.create_study(direction='minimize', sampler=sampler)
-    study.optimize(lambda trial: objective(trial, X_train, y_train, random_state),
-                   n_trials=n_trials, show_progress_bar=True)
+    study.optimize(
+        lambda trial: objective(
+            trial,
+            X_train,
+            y_train,
+            random_state),
+        n_trials=n_trials,
+        show_progress_bar=True)
     return study

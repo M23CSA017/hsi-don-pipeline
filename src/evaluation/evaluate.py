@@ -16,10 +16,13 @@ import shap
 import xgboost as xgb
 
 
-def compare_models(xgb_metrics: dict, nn_metrics: dict, save_path: str = None) -> None:
+def compare_models(
+        xgb_metrics: dict,
+        nn_metrics: dict,
+        save_path: str = None) -> None:
     """
     Compare XGBoost and Neural Network models using evaluation metrics.
-    
+
     :param xgb_metrics: Dictionary containing XGBoost evaluation metrics (e.g., Test_RMSE, Test_MAE, Test_R2)
     :param nn_metrics: Dictionary containing Neural Network evaluation metrics (e.g., Test_RMSE, Test_MAE, Test_R2)
     :param save_path: Optional path to save the comparison plot
@@ -92,7 +95,12 @@ def evaluate_model(model,
         logger.error(f"Error during model evaluation: {e}")
         raise e
 
-def plot_results(y_true: pd.Series, y_pred: np.ndarray, model_name: str, save_path: str = None) -> None:
+
+def plot_results(
+        y_true: pd.Series,
+        y_pred: np.ndarray,
+        model_name: str,
+        save_path: str = None) -> None:
     """
     Create evaluation plots with scatter of actual vs. predicted,
     residuals, and error distribution.
@@ -139,6 +147,7 @@ def plot_results(y_true: pd.Series, y_pred: np.ndarray, model_name: str, save_pa
     else:
         plt.show()
 
+
 def plot_residuals(y_true, y_pred, model_name, save_path=None):
     residuals = y_true - y_pred
 
@@ -183,7 +192,10 @@ def shap_analysis(model,
     try:
         # Get absolute path to models directory
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        models_dir = os.path.abspath(os.path.join(base_dir, "../../data/models/"))
+        models_dir = os.path.abspath(
+            os.path.join(
+                base_dir,
+                "../../data/models/"))
         save_path = os.path.join(models_dir, "shap_explainer.pkl")
 
         # Ensure directory exists
@@ -196,7 +208,10 @@ def shap_analysis(model,
         plt.xlabel('Feature Importance Score')
         plt.tight_layout()
         if plot_save_path:
-            plt.savefig(os.path.join(plot_save_path, "xgb_feature_importance.png"))
+            plt.savefig(
+                os.path.join(
+                    plot_save_path,
+                    "xgb_feature_importance.png"))
         else:
             plt.show()
 
@@ -206,7 +221,12 @@ def shap_analysis(model,
 
         # SHAP Summary Plot - Bar
         plt.figure(figsize=(10, 8))
-        shap.summary_plot(shap_values, X_train, plot_type="bar", max_display=20, show=False)
+        shap.summary_plot(
+            shap_values,
+            X_train,
+            plot_type="bar",
+            max_display=20,
+            show=False)
         plt.title('SHAP Feature Importance\n(Mean Absolute Impact on Model Output)')
         plt.xlabel('Mean |SHAP Value| (Average Impact on Prediction)')
         plt.tight_layout()

@@ -12,6 +12,7 @@ from torch.utils.data import TensorDataset, DataLoader
 PLOT_DIR = "./data/plots/"
 os.makedirs(PLOT_DIR, exist_ok=True)
 
+
 def perform_residual_analysis(y_true, y_pred, model_name):
     """
     Plot residuals (true - predicted) and save the figure.
@@ -24,13 +25,22 @@ def perform_residual_analysis(y_true, y_pred, model_name):
     plt.ylabel("Residual (True - Predicted)")
     plt.title(f"Residual Plot: {model_name}")
     plt.grid(True)
-    
-    path = os.path.join(PLOT_DIR, f"residuals_{model_name.lower().replace(' ', '_')}.png")
+
+    path = os.path.join(
+        PLOT_DIR,
+        f"residuals_{model_name.lower().replace(' ', '_')}.png")
     plt.savefig(path, bbox_inches="tight")
     plt.close()
     return path
 
-def run_kfold_cross_validation(model_class, X, y, k=5, model_type="xgb", **kwargs):
+
+def run_kfold_cross_validation(
+        model_class,
+        X,
+        y,
+        k=5,
+        model_type="xgb",
+        **kwargs):
     """
     Perform k-fold cross-validation for XGBoost or PyTorch NN model.
     Returns average RMSE and R^2.
@@ -52,8 +62,14 @@ def run_kfold_cross_validation(model_class, X, y, k=5, model_type="xgb", **kwarg
             optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
             X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
-            y_train_tensor = torch.tensor(y_train.reshape(-1, 1), dtype=torch.float32)
-            train_loader = DataLoader(TensorDataset(X_train_tensor, y_train_tensor), batch_size=32, shuffle=True)
+            y_train_tensor = torch.tensor(
+                y_train.reshape(-1, 1), dtype=torch.float32)
+            train_loader = DataLoader(
+                TensorDataset(
+                    X_train_tensor,
+                    y_train_tensor),
+                batch_size=32,
+                shuffle=True)
 
             model.train()
             for epoch in range(30):  # Fixed small epochs for CV
@@ -65,7 +81,10 @@ def run_kfold_cross_validation(model_class, X, y, k=5, model_type="xgb", **kwarg
 
             model.eval()
             with torch.no_grad():
-                y_pred = model(torch.tensor(X_val, dtype=torch.float32)).cpu().numpy().flatten()
+                y_pred = model(
+                    torch.tensor(
+                        X_val,
+                        dtype=torch.float32)).cpu().numpy().flatten()
         else:
             raise ValueError("Invalid model_type. Choose 'xgb' or 'nn'.")
 

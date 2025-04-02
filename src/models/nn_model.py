@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 # --------------------------------------------------------
 #  DONRegressor Model
 # --------------------------------------------------------
+
+
 class DONRegressor(nn.Module):
     def __init__(self, input_dim, hidden_dim=128, num_layers=3, dropout=0.2):
         """
@@ -46,7 +48,15 @@ class DONRegressor(nn.Module):
 # --------------------------------------------------------
 #  Model Training & Evaluation
 # --------------------------------------------------------
-def train_model(model, train_loader, val_loader, criterion, optimizer, model_path, num_epochs=100, patience=10):
+def train_model(
+        model,
+        train_loader,
+        val_loader,
+        criterion,
+        optimizer,
+        model_path,
+        num_epochs=100,
+        patience=10):
     """
     Train the PyTorch model with early stopping.
 
@@ -65,13 +75,15 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, model_pat
     model.to(device)
 
     # Learning rate scheduler
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer, mode='min', factor=0.5, patience=5)
 
     for epoch in range(num_epochs):
         model.train()
         total_loss = 0
         for batch in train_loader:
-            X_batch, y_batch = [x.to(device) for x in batch]  # Move batch to correct device
+            # Move batch to correct device
+            X_batch, y_batch = [x.to(device) for x in batch]
 
             optimizer.zero_grad()
             y_pred = model(X_batch)
@@ -96,7 +108,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, model_pat
             best_loss = val_loss
             no_improve_epochs = 0
             save_model(model, model_path)
-            logger.info(f"Improved Validation RMSE: {val_loss:.4f}, Model Saved!")
+            logger.info(
+                f"Improved Validation RMSE: {val_loss:.4f}, Model Saved!")
         else:
             no_improve_epochs += 1
 
@@ -135,10 +148,11 @@ def evaluate_model(model, data_loader):
     r2 = 1 - (np.sum((np.array(y_true) - np.array(y_pred)) ** 2) /
               np.sum((np.array(y_true) - np.mean(y_true)) ** 2))
 
-    return {"Test_RMSE": rmse, "Test_MAE": mae, "Test_R2": r2, "Test_Predictions": np.array(y_pred)}
-
-
-
+    return {
+        "Test_RMSE": rmse,
+        "Test_MAE": mae,
+        "Test_R2": r2,
+        "Test_Predictions": np.array(y_pred)}
 
 
 def save_model(model, path):
@@ -194,24 +208,43 @@ def objective(trial, X_train, y_train, X_val, y_val):
     weight_decay = trial.suggest_float('weight_decay', 1e-5, 1e-2, log=True)
 
     # Define the model dynamically based on hyperparameters
-    model = DONRegressor(X_train.shape[1], hidden_dim, num_layers, dropout_rate)
+    model = DONRegressor(
+        X_train.shape[1],
+        hidden_dim,
+        num_layers,
+        dropout_rate)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
     # Define loss and optimizer
     criterion = nn.MSELoss()
-    optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    optimizer = optim.AdamW(
+        model.parameters(),
+        lr=learning_rate,
+        weight_decay=weight_decay)
 
     # Prepare DataLoaders
-    train_loader = DataLoader(TensorDataset(X_train, y_train), batch_size=batch_size, shuffle=True)
+    train_loader = DataLoader(
+        TensorDataset(
+            X_train,
+            y_train),
+        batch_size=batch_size,
+        shuffle=True)
     val_loader = DataLoader(TensorDataset(X_val, y_val), batch_size=batch_size)
 
     # Dynamic path for trial-specific model
     trial_model_path = f"./data/models/nn_model_trial_{trial.number}.pt"
 
     # Train the model
-    train_model(model, train_loader, val_loader, criterion, optimizer, model_path=trial_model_path,
-                num_epochs=100, patience=10)
+    train_model(
+        model,
+        train_loader,
+        val_loader,
+        criterion,
+        optimizer,
+        model_path=trial_model_path,
+        num_epochs=100,
+        patience=10)
 
     # Evaluate on validation data
     val_metrics = evaluate_model(model, val_loader)
@@ -230,8 +263,18 @@ def tune_nn_hyperparameters(X_train, y_train, X_val, y_val, n_trials=50):
     :param y_val: Validation target.
     :param n_trials: Number of Optuna trials.
     """
-    study = optuna.create_study(direction='minimize', pruner=optuna.pruners.MedianPruner(n_warmup_steps=10))
-    study.optimize(lambda trial: objective(trial, X_train, y_train, X_val, y_val), n_trials=n_trials)
+    study = optuna.create_study(
+        direction='minimize',
+        pruner=optuna.pruners.MedianPruner(
+            n_warmup_steps=10))
+    study.optimize(
+        lambda trial: objective(
+            trial,
+            X_train,
+            y_train,
+            X_val,
+            y_val),
+        n_trials=n_trials)
 
     logger.info(f"🏆 Best trial RMSE: {study.best_value:.4f}")
     logger.info(f"🔧 Best hyperparameters: {study.best_trial.params}")
@@ -263,14 +306,19 @@ def run_training_pipeline(X_train, y_train, X_val, y_val, n_trials=50):
     :param y_val: Validation target.
     :param n_trials: Number of Optuna trials.
     """
-    best_model, best_params = tune_nn_hyperparameters(X_train, y_train, X_val, y_val, n_trials=n_trials)
+    best_model, best_params = tune_nn_hyperparameters(
+        X_train, y_train, X_val, y_val, n_trials=n_trials)
 
     # Save the final best NN model
     save_model(best_model, "./data/models/best_nn_model.pt")
 
     # Evaluate and report final model performance
     best_batch_size = best_params['batch_size']
-    val_loader = DataLoader(TensorDataset(X_val, y_val), batch_size=best_batch_size)
+    val_loader = DataLoader(
+        TensorDataset(
+            X_val,
+            y_val),
+        batch_size=best_batch_size)
     final_metrics = evaluate_model(best_model, val_loader)
     logger.info("Final Model Performance:")
     logger.info(final_metrics)

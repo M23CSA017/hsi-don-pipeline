@@ -25,7 +25,8 @@ def load_nn_model(model_path=NN_MODEL_PATH, config_path=CONFIG_PATH):
         # Try to retrieve the config using either key.
         config = cfg.get("nn_model_inference") or cfg.get("nn_model")
         if config is None:
-            raise KeyError("Configuration must contain either 'nn_model_inference' or 'nn_model'")
+            raise KeyError(
+                "Configuration must contain either 'nn_model_inference' or 'nn_model'")
     model = DONRegressor(
         input_dim=config["input_dim"],
         hidden_dim=config["hidden_dim"],
@@ -88,7 +89,11 @@ def predict_batch_with_both_models(features_list, config_path=CONFIG_PATH):
     }
 
 
-def predict_don(features, model_path=None, use_nn=False, config_path=CONFIG_PATH):
+def predict_don(
+        features,
+        model_path=None,
+        use_nn=False,
+        config_path=CONFIG_PATH):
     """
     Predict using either the XGBoost model or the Neural Network model based on the use_nn flag.
     If model_path is provided, it overrides the default model path.
@@ -100,7 +105,9 @@ def predict_don(features, model_path=None, use_nn=False, config_path=CONFIG_PATH
         if model_path is None:
             model_path = NN_MODEL_PATH
         # Load NN model using the provided configuration.
-        nn_model = load_nn_model(model_path=model_path, config_path=config_path)
+        nn_model = load_nn_model(
+            model_path=model_path,
+            config_path=config_path)
         features_arr = np.array(features)
         if features_arr.ndim == 1:
             features_arr = features_arr.reshape(1, -1)

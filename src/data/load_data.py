@@ -12,6 +12,7 @@ import logging
 reflectance_cols = None
 logger = logging.getLogger(__name__)
 
+
 def load_data(path: str) -> pd.DataFrame:
     """
     Load raw data and check for inconsistencies.
@@ -24,13 +25,16 @@ def load_data(path: str) -> pd.DataFrame:
     df = pd.read_csv(path)
 
     # Extract reflectance columns
-    reflectance_cols = [col for col in df.columns if col not in ["hsi_id", "vomitoxin_ppb"]]
+    reflectance_cols = [
+        col for col in df.columns if col not in [
+            "hsi_id", "vomitoxin_ppb"]]
     logger.info(f"Reflectance columns detected: {len(reflectance_cols)} bands")
 
     # Check for negative values in reflectance columns
     negative_values = (df[reflectance_cols] < 0).sum().sum()
     if negative_values > 0:
-        logger.warning(f"Warning: {negative_values} negative reflectance values found.")
+        logger.warning(
+            f"Warning: {negative_values} negative reflectance values found.")
 
     logger.info(f"Loaded data with shape: {df.shape}")
     logger.info(str(df.info()))
