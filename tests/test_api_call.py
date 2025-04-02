@@ -1,7 +1,17 @@
 import requests
 import numpy as np
 
+
+import pytest
+import os
+
+# Skip this test file in CI/CD where server is not running
+if os.getenv("CI", "false") == "true":
+    pytest.skip("Skipping external API call tests during CI", allow_module_level=True)
+
+
 API_BASE = "http://127.0.0.1:8000"
+
 
 def test_single_prediction():
     features = np.random.rand(70).tolist() 
