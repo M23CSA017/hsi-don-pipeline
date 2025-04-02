@@ -6,6 +6,7 @@ Utility for configuring logging in both console and file.
 
 import logging
 
+
 def setup_logging(log_file: str = "pipeline.log"):
     """
     Setup logging to file and console.
