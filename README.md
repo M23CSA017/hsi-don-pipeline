@@ -158,4 +158,4 @@ Go to: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 ## 👨‍💻 Author
 Prabhat, M.Tech AI @ IIT Jodhpur
 
-📬 Reach out for questions, collaborations, or feedback!
+Reach out for questions, collaborations, or feedback!
