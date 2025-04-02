@@ -4,7 +4,7 @@ A production-ready machine learning pipeline for predicting **DON (Deoxynivaleno
 
 ---
 
-## 📦 Features
+## 📆 Features
 
 - ✅ **Data Ingestion & Exploration**
   - Missing value checks, duplicates, outlier detection
@@ -30,17 +30,34 @@ A production-ready machine learning pipeline for predicting **DON (Deoxynivaleno
   - Model comparison summary plots
 
 - 🚀 **Deployment**
-  - FastAPI-powered REST API
-  - Dockerfile for containerization
-  - Real-time single & batch prediction endpoints
+  - FastAPI-powered REST API with `/predict` and `/predict_batch`
+  - Docker containerization using GitHub Actions
+  - CI/CD integration with GitHub Workflows
 
-- 🧪 **Testing & CI/CD**
-  - Modular unit tests for pipeline stages
-  - GitHub Actions CI for every commit
-  - Ready for GitHub Codespaces and local development
+- 🧚 **Testing & CI/CD**
+  - Modular unit tests for each pipeline stage
+  - Automatic linting and testing via **GitHub Actions**
+  - Docker image built and pushed to **GitHub Container Registry**
 
 ---
 
+## ⚙️ Project Structure
+
+```
+📁 hsi_don_pipeline/
+👅 configs/                   # YAML-based configurations
+📁 data/                      # Raw, processed data & saved models
+📁 deployment/               # Dockerfile and FastAPI app
+📁 notebooks/                # EDA and experiment notebooks
+📁 src/
+├── data/                 # Load & preprocess modules
+├── evaluation/           # Evaluation, SHAP, residuals, plots
+└── models/               # Training logic and model utils
+📁 tests/                    # Unit tests
+requirements.txt
+requirements-dev.txt
+README.md
+```
 
 ---
 
@@ -61,15 +78,84 @@ A production-ready machine learning pipeline for predicting **DON (Deoxynivaleno
 
 ---
 
-## 🚀 FastAPI Endpoints
+## 🚀 FastAPI API Documentation
 
-- `POST /predict` – Predict DON concentration for a single sample
-- `POST /predict_batch` – Predict DON concentrations for multiple samples
+### 📌 Endpoints
 
-### Example usage:
+#### `POST /predict`
+- **Input**:
+  ```json
+  {
+    "features": [float, float, ..., float]
+  }
+  ```
+- **Output**:
+  ```json
+  {
+    "xgboost_prediction": float,
+    "nn_prediction": float
+  }
+  ```
+
+#### `POST /predict_batch`
+- **Input**:
+  ```json
+  {
+    "features": [[float, float, ...], [float, float, ...], ...]
+  }
+  ```
+- **Output**:
+  ```json
+  {
+    "predictions": [
+      {"xgboost": float, "nn": float},
+      {"xgboost": float, "nn": float},
+      ...
+    ]
+  }
+  ```
+
+---
+
+## 🐳 Docker Deployment
+
+### 🛠️ Build & Run Locally
 ```bash
-curl -X POST http://127.0.0.1:8000/predict \
-    -H "Content-Type: application/json" \
-    -d '{"features": [0.12, 0.34, ..., 0.78]}'
+# Build Docker image
+$ docker build -t don-predictor -f deployment/Dockerfile .
 
+# Run container
+$ docker run -p 8000:8000 don-predictor
+```
 
+### 🌐 Access API
+Go to: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
+## 🔄 CI/CD (GitHub Actions)
+
+### 1. **CI Pipeline (`.github/workflows/ci.yml`)**
+- Runs on push/pull to `main`
+- Installs dependencies
+- Runs all unit tests with pytest
+- Lints using flake8
+
+### 2. **Docker Build (`.github/workflows/docker.yml`)**
+- Automatically builds Docker image
+- Pushes to GitHub Container Registry (GHCR) as `ghcr.io/<owner>/don-predictor:latest`
+
+---
+
+## 💡 Future Enhancements
+- 🌟 Add out-of-distribution detection
+- 🔊 Include logging with structured logs
+- 🧠 Support model versioning (MLflow)
+- ☁️ Deploy on AWS/GCP/Azure
+
+---
+
+## 👨‍💻 Author
+Prabhat, M.Tech AI @ IIT Jodhpur
+
+📬 Reach out for questions, collaborations, or feedback!
