@@ -27,7 +27,7 @@ PLOT_DIR = BASE_DIR / "outputs" / "plots" / "eda"
 
 # Create directory if it doesn't exist
 PLOT_DIR.mkdir(parents=True, exist_ok=True)
-print(f"✅ PLOT_DIR is set to: {PLOT_DIR}")
+print(f"PLOT_DIR is set to: {PLOT_DIR}")
 
 logger = logging.getLogger(__name__)
 
@@ -40,17 +40,17 @@ def perform_eda(df: pd.DataFrame, reflectance_cols: list) -> None:
     :param df: Raw DataFrame with reflectance columns.
     :param reflectance_cols: List of reflectance column names.
     """
-    logger.info("\n📊 Summary Statistics for Reflectance Bands:")
+    logger.info("\Summary Statistics for Reflectance Bands:")
     logger.info(str(df[reflectance_cols].describe().T.head()))
 
-    logger.info("\n📊 Summary Statistics for Target (vomitoxin_ppb):")
+    logger.info("\Summary Statistics for Target (vomitoxin_ppb):")
     logger.info(str(df["vomitoxin_ppb"].describe()))
 
     # Check for missing values and duplicates
     missing_values = df.isnull().sum()
-    logger.info("\n❗ Missing Values:")
+    logger.info("\n Missing Values:")
     logger.info(str(missing_values[missing_values > 0]))
-    logger.info(f"❗ Duplicate Rows: {df.duplicated().sum()}")
+    logger.info(f" Duplicate Rows: {df.duplicated().sum()}")
 
     # Convert band names to float for proper plotting
     band_numbers = np.array([float(band) for band in reflectance_cols])
@@ -157,7 +157,7 @@ def sensor_drift_check(df: pd.DataFrame, reflectance_cols: list) -> None:
     :param reflectance_cols: List of spectral band columns.
     """
     try:
-        logger.info("🔎 Performing sensor drift check...")
+        logger.info("Performing sensor drift check...")
 
         # Use selected bands across the spectrum (beginning, middle, end)
         selected_bands = [reflectance_cols[0], reflectance_cols[len(reflectance_cols)//2], reflectance_cols[-1]]
@@ -177,7 +177,7 @@ def sensor_drift_check(df: pd.DataFrame, reflectance_cols: list) -> None:
         plt.savefig(drift_plot_path, bbox_inches="tight")
         plt.close()
 
-        logger.info(f"✅ Sensor drift visualization saved to: {drift_plot_path}")
+        logger.info(f"Sensor drift visualization saved to: {drift_plot_path}")
 
     except Exception as e:
         logger.error(f"❗ Error during sensor drift check: {str(e)}")
@@ -202,24 +202,24 @@ def preprocess_data(df: pd.DataFrame,
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, shuffle=True
     )
-    logger.info(f"✅ Split data: X_train {X_train.shape}, X_test {X_test.shape}, y_train {y_train.shape}, y_test {y_test.shape}")
+    logger.info(f"Split data: X_train {X_train.shape}, X_test {X_test.shape}, y_train {y_train.shape}, y_test {y_test.shape}")
 
     # 2. Add NDVI-like index post-split
     X_train["ndvi_like"] = (X_train[nir_band] - X_train[red_band]) / (X_train[nir_band] + X_train[red_band] + 1e-9)
     X_test["ndvi_like"] = (X_test[nir_band] - X_test[red_band]) / (X_test[nir_band] + X_test[red_band] + 1e-9)
-    logger.info("✅ NDVI-like index added post-split.")
+    logger.info(" NDVI-like index added post-split.")
 
     # 3. Imputation and Scaling
     feature_cols = reflectance_cols + ["ndvi_like"]
     imputer = SimpleImputer(strategy="mean")
     X_train[feature_cols] = imputer.fit_transform(X_train[feature_cols])
     X_test[feature_cols] = imputer.transform(X_test[feature_cols])
-    logger.info("✅ Missing values imputed with mean.")
+    logger.info(" Missing values imputed with mean.")
 
     scaler = StandardScaler()
     X_train[feature_cols] = scaler.fit_transform(X_train[feature_cols])
     X_test[feature_cols] = scaler.transform(X_test[feature_cols])
-    logger.info("✅ Reflectance bands standardized.")
+    logger.info("Reflectance bands standardized.")
 
     # 4. Anomaly detection via Z-score
     z_scores = np.abs(zscore(X_train[reflectance_cols]))
@@ -233,7 +233,7 @@ def preprocess_data(df: pd.DataFrame,
     X_train_processed = pca.fit_transform(X_train[feature_cols])
     X_test_processed = pca.transform(X_test[feature_cols])
     explained_var = pca.explained_variance_ratio_.sum()
-    logger.info(f"✅ PCA applied: 70 components retained, explaining {explained_var:.2%} variance.")
+    logger.info(f" PCA applied: 70 components retained, explaining {explained_var:.2%} variance.")
 
     # PCA visualization
     plt.figure(figsize=(10, 6))

@@ -1,4 +1,5 @@
 import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 import numpy as np
 import pandas as pd
 import logging
@@ -55,10 +56,10 @@ def load_config(config_path: str) -> dict:
     try:
         with open(config_path, 'r') as f:
             cfg = yaml.safe_load(f)
-        logger.info("✅ Configuration loaded successfully.")
+        logger.info(" Configuration loaded successfully.")
         return cfg
     except Exception as e:
-        logger.error(f"❗ Error loading config file {config_path}: {e}")
+        logger.error(f" Error loading config file {config_path}: {e}")
         raise e
 
 # ---------------------------------------------------------------------------
@@ -169,7 +170,7 @@ def xgb_objective(trial, X_train, y_train, X_val, y_val):
 def main():
     # Setup logging
     setup_logging(log_file="training.log")
-    logger.info("🚀 Starting training pipeline...")
+    logger.info(" Starting training pipeline...")
 
     # Load config
     config = load_config(CONFIG_PATH)
@@ -201,26 +202,26 @@ def main():
     # ---------------------------------------------------------------------------
     # Step 4a: Optuna Hyperparameter Tuning for XGBoost
     # ---------------------------------------------------------------------------
-    logger.info("⚡ Starting Optuna hyperparameter tuning for XGBoost...")
+    logger.info(" Starting Optuna hyperparameter tuning for XGBoost...")
     xgb_study = optuna.create_study(direction="minimize")
     xgb_study.optimize(
         lambda trial: xgb_objective(trial, X_train2.values, y_train2.values, X_test2.values, y_test2.values),
-        n_trials=config.get("optuna_trials_xgb", 5)
+        n_trials=config.get("optuna_trials_xgb", 50)
     )
     xgb_best_trial = xgb_study.best_trial
-    logger.info(f"🏆 Best XGBoost trial R²: {-xgb_best_trial.value:.4f}")
-    logger.info(f"🔧 Best XGBoost parameters: {xgb_best_trial.params}")
+    logger.info(f" Best XGBoost trial R²: {-xgb_best_trial.value:.4f}")
+    logger.info(f" Best XGBoost parameters: {xgb_best_trial.params}")
 
     # Train final XGBoost model with best parameters
     best_xgb_model = xgb.XGBRegressor(**xgb_best_trial.params, random_state=RANDOM_STATE)
     best_xgb_model.fit(X_train2.values, y_train2.values)
     joblib.dump(best_xgb_model, XGB_MODEL_PATH)
-    logger.info(f"✅ Best XGBoost model saved successfully to {XGB_MODEL_PATH}")
+    logger.info(f" Best XGBoost model saved successfully to {XGB_MODEL_PATH}")
 
     # ---------------------------------------------------------------------------
     # Step 4b: Optuna Hyperparameter Tuning for Neural Network
     # ---------------------------------------------------------------------------
-    logger.info("⚡ Starting Optuna hyperparameter tuning for Neural Network...")
+    logger.info(" Starting Optuna hyperparameter tuning for Neural Network...")
     X_train_tensor = torch.tensor(X_train2.values, dtype=torch.float32)
     y_train_tensor = torch.tensor(y_train2.values.reshape(-1, 1), dtype=torch.float32)
     X_val_tensor = torch.tensor(X_test2.values, dtype=torch.float32)
@@ -229,11 +230,11 @@ def main():
     nn_study = optuna.create_study(direction="minimize", pruner=optuna.pruners.MedianPruner(n_warmup_steps=10))
     nn_study.optimize(
         lambda trial: nn_objective(trial, X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor, config),
-        n_trials=config.get("optuna_trials_nn", 5)
+        n_trials=config.get("optuna_trials_nn", 50)
     )
     nn_best_trial = nn_study.best_trial
-    logger.info(f"🏆 Best NN trial R²: {-nn_best_trial.value:.4f}")
-    logger.info(f"🔧 Best NN parameters: {nn_best_trial.params}")
+    logger.info(f" Best NN trial R²: {-nn_best_trial.value:.4f}")
+    logger.info(f" Best NN parameters: {nn_best_trial.params}")
 
     # ---------------------------------------------------------------------------
     # Step 5: Train and Save the Best NN Model After Optuna
@@ -260,7 +261,7 @@ def main():
         num_epochs=config["nn_model"]["num_epochs"],
         patience=config["nn_model"]["patience"],
     )
-    logger.info(f"✅ Best NN model retrained and saved successfully to {NN_MODEL_PATH}")
+    logger.info(f" Best NN model retrained and saved successfully to {NN_MODEL_PATH}")
 
     
 
@@ -269,7 +270,7 @@ def main():
     # ---------------------------------------------------------------------------
     final_nn_model.load_state_dict(torch.load(NN_MODEL_PATH))
     final_nn_model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
-    logger.info("✅ Best Neural Network Model loaded successfully.")
+    logger.info(" Best Neural Network Model loaded successfully.")
 
     # ---------------------------------------------------------------------------
     # Dynamically update inference parameters in config.yaml
@@ -293,7 +294,7 @@ def main():
     with open(config_path, "w") as f:
         yaml.dump(config_data, f)
 
-    logger.info(f"✅ Inference configuration dynamically saved to {config_path}")
+    logger.info(f" Inference configuration dynamically saved to {config_path}")
 
 
 
@@ -331,14 +332,14 @@ def main():
     xgb_rmse = np.sqrt(np.mean((y_test2.values - y_pred_xgb) ** 2))
     xgb_r2 = 1 - (np.sum((y_test2.values - y_pred_xgb) ** 2) / np.sum((y_test2.values - np.mean(y_test2.values)) ** 2))
 
-    logger.info(f"✅ Best Neural Network Performance after Optuna: RMSE: {nn_metrics['Test_RMSE']:.4f}, R²: {nn_metrics['Test_R2']:.4f}")
-    logger.info(f"✅ Best XGBoost Model Performance: RMSE: {xgb_rmse:.4f}, R²: {xgb_r2:.4f}")
-    logger.info("🎉 Training pipeline completed successfully!")
+    logger.info(f" Best Neural Network Performance after Optuna: RMSE: {nn_metrics['Test_RMSE']:.4f}, R2: {nn_metrics['Test_R2']:.4f}")
+    logger.info(f" Best XGBoost Model Performance: RMSE: {xgb_rmse:.4f}, R²: {xgb_r2:.4f}")
+    logger.info(" Training pipeline completed successfully!")
     
         # --- Residual Plots ---
     residuals_nn_plot = perform_residual_analysis(y_test2.values, nn_metrics["Test_Predictions"], model_name="Neural Network")
     residuals_xgb_plot = perform_residual_analysis(y_test2.values, y_pred_xgb, model_name="XGBoost")
-    logger.info(f"✅ Residual plots saved to:\n🧠 NN: {residuals_nn_plot}\n📈 XGB: {residuals_xgb_plot}")
+    logger.info(f"Residual plots saved to:\n NN: {residuals_nn_plot}\n XGB: {residuals_xgb_plot}")
 
     xgb_kfold_metrics = run_kfold_cross_validation(
         model_class=xgb.XGBRegressor,
@@ -349,7 +350,7 @@ def main():
         **xgb_best_trial.params
     )
 
-    logger.info(f"📊 XGBoost K-Fold CV Metrics: {xgb_kfold_metrics}")
+    logger.info(f"XGBoost K-Fold CV Metrics: {xgb_kfold_metrics}")
 
     nn_kfold_metrics = run_kfold_cross_validation(
         model_class=DONRegressor,
@@ -362,7 +363,7 @@ def main():
         num_layers=best_params['num_layers'],
         dropout=best_params['dropout']
     )
-    logger.info(f"📊 Neural Network K-Fold CV Metrics: {nn_kfold_metrics}")
+    logger.info(f"Neural Network K-Fold CV Metrics: {nn_kfold_metrics}")
 
     # Generate and save plots for individual models:
     plot_results(y_test2, nn_metrics["Test_Predictions"], model_name="Neural Network", save_path=os.path.join(PLOT_DIR, "nn_results.png"))

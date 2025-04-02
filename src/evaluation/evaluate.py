@@ -159,7 +159,7 @@ def plot_residuals(y_true, y_pred, model_name, save_path=None):
     plt.tight_layout()
     if save_path:
         plt.savefig(save_path)
-        print(f"✅ Residuals plot saved to {save_path}")
+        print(f" Residuals plot saved to {save_path}")
     plt.close()
 
 
@@ -228,7 +228,7 @@ def shap_analysis(model,
 
         # Save the SHAP explainer
         joblib.dump(explainer, save_path)
-        logger.info(f"✅ SHAP explainer saved to {save_path}")
+        logger.info(f"SHAP explainer saved to {save_path}")
     except Exception as e:
         logger.error(f"❗ Error during SHAP analysis: {e}")
         raise e

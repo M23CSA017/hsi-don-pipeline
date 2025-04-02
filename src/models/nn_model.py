@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # --------------------------------------------------------
-# 🧠 DONRegressor Model
+#  DONRegressor Model
 # --------------------------------------------------------
 class DONRegressor(nn.Module):
     def __init__(self, input_dim, hidden_dim=128, num_layers=3, dropout=0.2):
@@ -44,7 +44,7 @@ class DONRegressor(nn.Module):
 
 
 # --------------------------------------------------------
-# 🚀 Model Training & Evaluation
+#  Model Training & Evaluation
 # --------------------------------------------------------
 def train_model(model, train_loader, val_loader, criterion, optimizer, model_path, num_epochs=100, patience=10):
     """
@@ -96,7 +96,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, model_pat
             best_loss = val_loss
             no_improve_epochs = 0
             save_model(model, model_path)
-            logger.info(f"✅ Improved Validation RMSE: {val_loss:.4f}, Model Saved!")
+            logger.info(f"Improved Validation RMSE: {val_loss:.4f}, Model Saved!")
         else:
             no_improve_epochs += 1
 
@@ -110,7 +110,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, model_pat
 
         # Early stopping if no improvement for 'patience' epochs
         if no_improve_epochs >= patience:
-            logger.info("⚠️ Early stopping triggered due to no improvement.")
+            logger.info("Early stopping triggered due to no improvement.")
             break
 
 
@@ -150,7 +150,7 @@ def save_model(model, path):
     """
     os.makedirs(os.path.dirname(path), exist_ok=True)
     torch.save(model.state_dict(), path)
-    logger.info(f"✅ Model saved to {path}")
+    logger.info(f" Model saved to {path}")
 
 
 def load_model(model, path):
@@ -165,14 +165,14 @@ def load_model(model, path):
         model.load_state_dict(torch.load(path, map_location=device))
         model.to(device)  # Ensure model is sent to the correct device
         model.eval()
-        logger.info(f"✅ Model loaded from {path}")
+        logger.info(f"Model loaded from {path}")
         return model
     else:
         raise FileNotFoundError(f"❗ Model file not found: {path}")
 
 
 # --------------------------------------------------------
-# 🔥 Optuna Integration for Hyperparameter Tuning
+# Optuna Integration for Hyperparameter Tuning
 # --------------------------------------------------------
 def objective(trial, X_train, y_train, X_val, y_val):
     """
@@ -251,7 +251,7 @@ def tune_nn_hyperparameters(X_train, y_train, X_val, y_val, n_trials=50):
 
 
 # --------------------------------------------------------
-# 🎯 Main Pipeline
+# Main Pipeline
 # --------------------------------------------------------
 def run_training_pipeline(X_train, y_train, X_val, y_val, n_trials=50):
     """
@@ -272,5 +272,5 @@ def run_training_pipeline(X_train, y_train, X_val, y_val, n_trials=50):
     best_batch_size = best_params['batch_size']
     val_loader = DataLoader(TensorDataset(X_val, y_val), batch_size=best_batch_size)
     final_metrics = evaluate_model(best_model, val_loader)
-    logger.info("✅ Final Model Performance:")
+    logger.info("Final Model Performance:")
     logger.info(final_metrics)
