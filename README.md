@@ -1,73 +1,72 @@
-# 🌽 HSI DON Pipeline
+# HSI DON Pipeline
 
-A production-ready machine learning pipeline for predicting **DON (Deoxynivalenol)** concentrations in corn using **Hyperspectral Imaging (HSI)** data. This pipeline is modular, interpretable, and deployable with Docker and FastAPI.
+A production-ready machine learning pipeline for predicting DON (Deoxynivalenol) concentrations in corn using Hyperspectral Imaging (HSI) data. This pipeline is modular, interpretable, and deployable using FastAPI.
 
 ---
 
-## 📆 Features
+## Features
 
-- ✅ **Data Ingestion & Exploration**
+- Data Ingestion & Exploration
   - Missing value checks, duplicates, outlier detection
   - Sensor drift visualization (placeholder)
   - EDA visualizations (histograms, spectral plots, PCA, etc.)
 
-- ⚙️ **Preprocessing**
+- Preprocessing
   - Z-score based anomaly filtering
   - Imputation & standardization
   - NDVI-like index feature
   - PCA-based dimensionality reduction
 
-- 🤖 **Model Training & Optimization**
+- Model Training & Optimization
   - XGBoost and Neural Network regressors
-  - Hyperparameter tuning using **Optuna**
+  - Hyperparameter tuning using Optuna
   - Cross-validation support
   - Residual analysis for error diagnostics
 
-- 📊 **Evaluation & Explainability**
+- Evaluation & Explainability
   - Regression metrics (MAE, RMSE, R²)
   - Residual & actual-vs-predicted plots
   - SHAP-based feature importance and bar plots
   - Model comparison summary plots
 
-- 🚀 **Deployment**
+- Deployment
   - FastAPI-powered REST API with `/predict` and `/predict_batch`
-  - Docker containerization using GitHub Actions
-  - CI/CD integration with GitHub Workflows
+  - Local server execution using Uvicorn
+  - Input validation and batch support
 
-- 🧚 **Testing & CI/CD**
+- Testing & CI
   - Modular unit tests for each pipeline stage
-  - Automatic linting and testing via **GitHub Actions**
-  - Docker image built and pushed to **GitHub Container Registry**
+  - Automatic linting and testing via GitHub Actions
 
 ---
 
-## ⚙️ Project Structure
+## Project Structure
 
 ```
-📁 hsi_don_pipeline/
-👅 configs/                   # YAML-based configurations
-📁 data/                      # Raw, processed data & saved models
-📁 deployment/               # Dockerfile and FastAPI app
-📁 notebooks/                # EDA and experiment notebooks
-📁 src/
-├── data/                 # Load & preprocess modules
-├── evaluation/           # Evaluation, SHAP, residuals, plots
-└── models/               # Training logic and model utils
-📁 tests/                    # Unit tests
-requirements.txt
-requirements-dev.txt
-README.md
+hsi_don_pipeline/
+├── configs/                  # YAML-based configurations
+├── data/                     # Raw, processed data & saved models
+├── deployment/               # FastAPI app
+├── notebooks/                # EDA and experiment notebooks
+├── src/
+│   ├── data/                 # Load & preprocess modules
+│   ├── evaluation/           # Evaluation, SHAP, residuals, plots
+│   └── models/               # Training logic and model utils
+├── tests/                    # Unit tests
+├── requirements.txt
+├── requirements-dev.txt
+└── README.md
 ```
 
 ---
 
-## 🔍 Model Evaluation & Visualizations
+## Model Evaluation & Visualizations
 
-- **Actual vs Predicted Plot** – Compares true and predicted values.
-- **Residual Plot** – Examines model prediction errors.
-- **SHAP Analysis** – Explains model decisions using feature importance.
+- Actual vs Predicted Plot – Compares true and predicted values.
+- Residual Plot – Examines model prediction errors.
+- SHAP Analysis – Explains model decisions using feature importance.
 
-### 🎨 Visualization Outputs
+### Visualization Outputs
 
 - `data/plots/xgb_results.png` – XGBoost results
 - `data/plots/nn_results.png` – Neural Network results
@@ -78,84 +77,86 @@ README.md
 
 ---
 
-## 🚀 FastAPI API Documentation
+## FastAPI Deployment
 
-### 📌 Endpoints
+### Local API Server (No Docker)
 
-#### `POST /predict`
-- **Input**:
-  ```json
-  {
-    "features": [float, float, ..., float]
-  }
-  ```
-- **Output**:
-  ```json
-  {
-    "xgboost_prediction": float,
-    "nn_prediction": float
-  }
-  ```
-
-#### `POST /predict_batch`
-- **Input**:
-  ```json
-  {
-    "features": [[float, float, ...], [float, float, ...], ...]
-  }
-  ```
-- **Output**:
-  ```json
-  {
-    "predictions": [
-      {"xgboost": float, "nn": float},
-      {"xgboost": float, "nn": float},
-      ...
-    ]
-  }
-  ```
-
----
-
-## 🐳 Docker Deployment
-
-### 🛠️ Build & Run Locally
 ```bash
-# Build Docker image
-$ docker build -t don-predictor -f deployment/Dockerfile .
+# Create and activate virtual environment
+python3 -m venv hsi_env
+source hsi_env/bin/activate
 
-# Run container
-$ docker run -p 8000:8000 don-predictor
+# Install dependencies
+pip install -r requirements.txt
+
+# Start FastAPI server
+uvicorn deployment.app:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-### 🌐 Access API
-Go to: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+### Access API Docs
+Visit: http://127.0.0.1:8000/docs
 
 ---
 
-## 🔄 CI/CD (GitHub Actions)
+## API Endpoints
 
-### 1. **CI Pipeline (`.github/workflows/ci.yml`)**
+### POST /predict
+**Input**:
+```json
+{
+  "features": [float, float, ..., float]
+}
+```
+
+**Output**:
+```json
+{
+  "xgboost_prediction": float,
+  "nn_prediction": float
+}
+```
+
+### POST /predict_batch
+**Input**:
+```json
+{
+  "features": [[float, float, ...], [float, float, ...], ...]
+}
+```
+
+**Output**:
+```json
+{
+  "predictions": [
+    {"xgboost": float, "nn": float},
+    {"xgboost": float, "nn": float},
+    ...
+  ]
+}
+```
+
+---
+
+## CI/CD (GitHub Actions)
+
+### CI Pipeline (`.github/workflows/ci.yml`)
 - Runs on push/pull to `main`
 - Installs dependencies
 - Runs all unit tests with pytest
 - Lints using flake8
 
-### 2. **Docker Build (`.github/workflows/docker.yml`)**
-- Automatically builds Docker image
-- Pushes to GitHub Container Registry (GHCR) as `ghcr.io/<owner>/don-predictor:latest`
+---
+
+## Future Enhancements
+
+- Add out-of-distribution detection
+- Include structured logging
+- Support model versioning with MLflow
+- Cloud deployment via AWS/GCP/Azure or Streamlit
 
 ---
 
-## 💡 Future Enhancements
-- 🌟 Add out-of-distribution detection
-- 🔊 Include logging with structured logs
-- 🧠 Support model versioning (MLflow)
-- ☁️ Deploy on AWS/GCP/Azure
+## Author
 
----
-
-## 👨‍💻 Author
-Prabhat, M.Tech AI @ IIT Jodhpur
-
-Reach out for questions, collaborations, or feedback!
+Prabhat, M.Tech AI @ IIT Jodhpur  
+Reach out for questions, collaborations, or feedback.
