@@ -140,7 +140,7 @@ Visit: http://127.0.0.1:8000/docs
 ## CI/CD (GitHub Actions)
 
 ### CI Pipeline (`.github/workflows/ci.yml`)
-- Runs on push/pull to `main`
+- Runs on push to `main`
 - Installs dependencies
 - Runs all unit tests with pytest
 - Lints using flake8
