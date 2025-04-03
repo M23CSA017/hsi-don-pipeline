@@ -1,6 +1,6 @@
 # HSI DON Pipeline
 
-A production-ready machine learning pipeline for predicting DON (Deoxynivalenol) concentrations in corn using Hyperspectral Imaging (HSI) data. This pipeline is modular, interpretable, and deployable using FastAPI.
+A  machine learning pipeline for predicting DON (Deoxynivalenol) concentrations in corn using Hyperspectral Imaging (HSI) data. This pipeline is modular, interpretable, and deployable using FastAPI.
 
 ---
 
