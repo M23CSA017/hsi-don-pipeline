@@ -26,7 +26,7 @@ class TestXGBoostPipeline(unittest.TestCase):
         self.temp_dir = tempfile.TemporaryDirectory()
 
         # Create dummy training and test data with sufficient rows and many bands
-        n_train, n_test, n_features = 100, 20, 100  # 100 bands → PCA can extract 70 components
+        n_train, n_test, n_features = 100, 20, 200  # 200 bands → PCA can extract 70 components
         band_names = [f"band{i}" for i in range(n_features)]
         train_df = pd.DataFrame(np.random.rand(n_train, n_features), columns=band_names)
         train_df["hsi_id"] = np.arange(1, n_train+1)
